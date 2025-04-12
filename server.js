@@ -7,7 +7,7 @@ const path = require('path')
 const methodOverride = require('method-override')
 const bodyParser = require('body-parser')
 const { err500, err404 } = require('./utils/error')
-const { articleRouter } = require('./routers/article.route')
+const { jobRouter } = require('./routers/job.route')
 const { authRouter } = require('./routers/auth.route')
 const { profileRouter } = require('./routers/profile.route')
 
@@ -30,7 +30,7 @@ server.use('/user', authRouter)
 
 server.use(expressLayouts)
 
-server.use('/', articleRouter)
+server.use('/', jobRouter)
 
 server.use('/user', profileRouter)
 
