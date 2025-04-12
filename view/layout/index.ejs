@@ -1,68 +1,55 @@
 <!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Winnicode Portal Berita</title>
-        <link rel="shortcut icon" href="/assets/img/logo.png" />
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recruitment App Winnicode</title>
+    <link rel="shortcut icon" href="/assets/img/logo.png" />
 
-        <!-- Google Font: Source Sans Pro -->
-        <link rel="stylesheet"
-            href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-        <!-- Font Awesome Icons -->
-        <link rel="stylesheet"
-            href="/assets/plugins/fontawesome-free/css/all.min.css">
+    <!-- Google Font: Source Sans Pro -->
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet"
+        href="/assets/plugins/fontawesome-free/css/all.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="/assets/assets/dist/css/adminlte.min.css">
 
-        <link rel="stylesheet" href="/assets/css/layoutstyle.css">
+    <link rel="stylesheet" href="/assets/css/layoutstyle.css">
 
-        <link rel="stylesheet" href="/assets/css/detail.css">
+    <!-- <link rel="stylesheet" href="/assets/css/detail.css"> -->
 
-        <link rel="stylesheet" href="/assets/css/profile.css">
+    <link rel="stylesheet" href="/assets/css/profile.css">
 
-        <link rel="stylesheet" href="/assets/css/formUpdate.css">
-    </head>
-    <body>
-        <div class="app-header">
-            <img src="http://localhost:8000/img/banner-logo.png" alt="logo-img">
-        </div>
-        <div class="main-container">
-            <aside class="sidebar">
-                <span>
-                    <a href="/">
-                        <div>
-                            <i class="fas fa-house-user"></i>
-                        </div>
-                    </a>
-                </span>
-                <span>
-                    <a href="#" id="open-search">
-                        <div>
-                            <i class="fas fa-search"></i>
-                        </div>
-                    </a>
-                </span>
-                <span>
-                    <a href="/user/profile/<%= context.user.id %>">
-                        <div>
-                            <i class="fas fa-user"></i>
-                        </div>
-                    </a>
-                </span>
-            </aside>
-            <div id="search-popup" class="popup-overlay">
-                <div class="popup-content">
-                    <span id="close-search" class="close-btn">&times;</span>
-                    <h2>Search</h2>
-                    <form action="/" method="GET" class="form-inline">
-                        <input type="text" name="query" placeholder="Search..." required>
-                        <button type="submit" class="submit-btn"><i class="fas fa-search"></i></button>
-                    </form>
-                </div>
-            </div>
-            <div class="feed-container">
-                <%- body %>
-            </div>
-        </div>
-    </body>
-    <script src="/assets/js/pop-up.js"></script>
+    <link rel="stylesheet" href="/assets/css/formUpdate.css">
+</head>
+<body>
+
+  <header class="app-header">
+    <nav class="navbar">
+      <div class="navbar-left">
+        <div><img class="logo" src="http://localhost:8000/img/banner-logo.png" alt="logo-img"></div>
+        <ul class="nav-links">
+        <li><a href="">Beranda</a></li>
+        <li>
+            <form action="/" method="GET" class="form-inline">
+                <input class="form-control" type="text" name="search" placeholder="Search job vacancy..." value="<%= context.search %>">
+                <button type="submit" class="submit-btn"><i class="fas fa-search"></i></button>
+            </form>
+        </li>
+        </ul>
+      </div>
+      <div class="navbar-right">
+        <img src="assets/img/man.png" alt="Profile" class="avatar">
+      </div>
+    </nav>
+      
+  </header>
+
+  <main class="job-list">
+    <%- body %>
+  </main>
+
+</body>
 </html>
+
