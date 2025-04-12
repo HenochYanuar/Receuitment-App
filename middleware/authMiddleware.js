@@ -10,7 +10,7 @@ const authenticateJWT = (req, res, next) => {
         return res.sendStatus(403)
       }
 
-      if (user.role !== 'user') {
+      if (user.role !== 'jobseeker') {
         return res.status(403).send('Forbidden: Users only')
       }
 

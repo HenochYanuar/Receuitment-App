@@ -30,7 +30,7 @@ const loginPost = async (req, res) => {
       if (email === user.email && isValid === true) {
         if (user.isRegister === true) {
           
-          if (user.role === 'admin') {
+          if (user.role === 'admin_hr') {
             res.status(400).render('login&register/login', { message: 'This account is admin role' })
           }
 
