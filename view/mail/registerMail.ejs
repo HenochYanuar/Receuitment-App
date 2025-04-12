@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aktivasi Email</title>
+
+  <link rel="stylesheet" href="/assets/css/email.css">
+</head>
+<body>
+  <div class="email-container">
+    <div class="header">
+      <h1>Aktivasi Email</h1>
+    </div>
+    <div class="content">
+      <h2>Hallo <%= user.username %>,</h2>
+      <p>Terima kasih telah mendaftar. Untuk mengaktifkan akun Anda, silakan klik tombol di bawah ini:</p>
+      <a href="<%= verificationLink %>" target="_blank" class="btn">Aktivasi Email</a>
+      <p>Jika Anda tidak mendaftarkan akun ini, abaikan email ini.</p>
+    </div>
+    <div class="footer">
+      <p>© 2024 Portal Berita Winnicode. All rights reserved.</p>
+    </div>
+  </div>
+</body>
+</html>

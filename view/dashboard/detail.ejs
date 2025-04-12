@@ -1,0 +1,73 @@
+<div class="card">
+  <div class="card-body">
+    <div class="container mt-5">
+      <div class="text-center mb-4">
+        <h2><%= context.article.title %></h2>
+        <p class="text-muted">Published on <em><%= context.article.updated_at%></em></p>
+        <p class="text-muted"> Kategori: <strong><%= context.article.category%></strong></p>
+      </div>
+      <div class="text-center mb-4">
+        <img src="http://localhost:8000/img/articles_image/<%= context.article.foto %>" alt="Gambar Artikel"
+          class="img-fluid rounded">
+      </div>
+      <div class="mb-5">
+        <p><%- context.article.content %></p>
+      </div>
+      <div class="text-muted  mb-5">
+        <span>Tags: </span>
+        <% for (let i = 0; i < context.tag.length; i++) { %>
+          <strong><span>#<%= context.tag[i] %></span></strong>
+        <% } %>
+      </div>
+    </div>
+    <div id="comments-section" class="container mt-4">
+      <h3>Comments</h3>
+      <div id="comment-form">
+        <form action="/" method="POST">
+          <input type="text" value="<%= context.article.id %>" hidden id="article_id" name="article_id">
+          <input type="text" value="<%= context.user.id %>" hidden id="user_id" name="user_id">
+          <div class="form-group mt-3">
+            <input type="text" id="comment-text" name="comment" class="form-control" rows="3" placeholder="Tulis komentar Anda di sini" required>
+          </div>
+          <button type="submit" class="btn btn-primary mt-3"><i class="far fa-paper-plane"></i></button>
+        </form>
+      </div>
+      <% const renderComments = (comments) => { %>
+        <% comments.forEach(comment => { %>
+          <div class="comment-item" id="comment<%= comment.id %>">
+            <div class="comment-header">
+              <strong class="username"><%= comment.username %></strong>
+              <span class="time-posted"><%= comment.timeDifference %></span>
+            </div>
+            <p class="comment-content"><%= comment.content %></p>
+            <div class="comment-actions">
+              <a href="#" class="reply" data-article-id="<%= comment.article_id %>" data-user-id="<%= context.user.id %>" data-id="<%= comment.id %>">Balas</a>
+            </div>
+      
+            <div class="reply-input-container" id="reply-input-container-<%= comment.id %>"></div>
+      
+            <% if (comment.children && comment.children.length > 0) { %>
+              <div class="replies hidden" id="replies-<%= comment.id %>">
+                <% comment.children.forEach(reply => { %>
+                  <div class="reply-item" id="comment<%= comment.id %>">
+                    <div class="reply-header">
+                      <strong class="username"><%= reply.username %></strong>
+                      <span class="time-posted"><%= reply.timeDifference %></span>
+                    </div>
+                    <p class="reply-content"><%= reply.content %></p>
+                  </div>
+                <% }); %>
+              </div>
+              <a href="#" class="show-replies" data-id="<%= comment.id %>">Lihat balasan selengkapnya</a>
+            <% } %>
+          </div>
+        <% }); %>
+      <% } %>
+      
+      <% renderComments(context.comments) %>
+    </div>
+  </div>
+</div>
+
+<script src="/assets/js/comment.js"></script>
+

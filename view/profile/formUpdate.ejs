@@ -1,0 +1,43 @@
+<div class="form-container">
+  <div class="form-header">
+    <h3>Update Profile</h3>
+    <p>Customize your account with the correct data</p>
+  </div>
+  <div class="profile-form">
+    <form action="/user/profile/update?_method=PATCH" method="POST">
+      <table>
+        <input type="text" name="id" value="<%= context.user.id %>" readonly hidden>
+        <tr>
+          <td class="label">
+            <label for="username">Username</label>
+          </td>
+          <td>
+            <input type="text" id="usernmae" name="username" value="<%= context.user.username %>" required>
+          </td>
+        </tr>
+        <tr>
+          <td class="label">
+            <label for="name">Name</label>
+          </td>
+          <td>
+            <input type="text" id="name" name="name" value="<%= context.user.name || context.user.username %>">
+          </td>
+        </tr>
+        <tr>
+          <td class="label">
+            <label for="email">E-mail</label>
+          </td>
+          <td>
+            <input type="text" id="email" name="email" value="<%= context.user.email %>" readonly>
+          </td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>
+            <button type="submit" class="save-button">Save</button>
+          </td>
+        </tr>
+      </table>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,37 @@
+<div class="profile-container">
+  <div class="profile-body">
+    <div class="profile-data">
+      <p class="username"><%= context.user.username %></p>
+      <p class="name"><%= context.user.name || context.user.username %></p>
+    </div>
+    <div class="logout-btn">
+      <a href="/user/logout">Logout</a>
+    </div>
+  </div>
+  <p class="email"><%= context.user.email %></p>
+  <a href="/user/profile/update/<%= context.user.id %>">
+    <div class="profile-action">
+      <span>
+        Edit Profile
+      </span>
+    </div>
+  </a>
+</div>
+<div class="comments-user">
+  <div>
+    <h3>Comments</h3>
+  </div>
+  <% context.comments.forEach(comment => {%>
+  <div class="articel-comment-item">
+    <a href="/<%= comment.article_id %>#comment<%= comment.id %>">
+      <div>
+        <img src="http://localhost:8000/<%= comment.image_url %>" alt="Article Image" class="article_img">
+        <p class="title-on-comment"><%= comment.title %></p>
+        <p><strong class="username-lite"><%= comment.username %></strong><br><%= comment.content %></p>
+      </div>
+      <div>
+      </div>
+    </a>
+  </div>
+  <% }) %>
+</div>
