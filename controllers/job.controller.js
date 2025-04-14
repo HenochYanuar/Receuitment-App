@@ -1,11 +1,9 @@
 const { decode } = require('html-entities')
 const jobModel = require('../models/job.model')
-const tagsModel = require('../models/tags.model')
 const userModel = require('../models/user.model')
-const commentModel = require('../models/comment.model')
+const applicationModel = require('../models/application.model')
 const moment = require('moment')
 const { err500, err404, err403 } = require('../utils/error')
-const idCreator = require('../utils/idCreator')
 const formatCurrency = require('../utils/formatCurrency')
 
 const layout = 'layout/index'
@@ -20,7 +18,7 @@ const getAllJobs = async (req, res) => {
     }
 
     const page = parseInt(req.query.page) || 1
-    const limit = parseInt(req.query.limit) || 9
+    const limit = parseInt(req.query.limit) || 12
     const search = req.query.search || ''
 
     const { jobs, totalItems } = await jobModel.getAllJobs(page, limit, search)
@@ -93,6 +91,11 @@ const getDetailJob = async (req, res) => {
     if (!job) {
       return res.status(404).render('error/error', err404)
     }
+
+    const application = await applicationModel.findByUserAndJob(user.id, job.id)
+
+    const row =  application.length > 0 ? application[0] : null
+    const hasApplied = !!row
     
     const updatedAt = moment(job.updated_at)
     const now = moment()
@@ -118,7 +121,9 @@ const getDetailJob = async (req, res) => {
       job: {
         ...job,
         timeDifference: timeText
-      }
+      },
+      hasApplied,
+      application
     }
     
     const title = 'Detail Job Vacancy'
@@ -136,39 +141,7 @@ const getDetailJob = async (req, res) => {
   }
 }
 
-const postComment = async (req, res) => {
-  try {
-    const { article_id, user_id, comment, parent_id } = await req.body
-
-    if (!article_id || !user_id || !comment) {
-      res.status(403).render('error/error', err403)
-      return
-    }
-
-    const id = idCreator.createID()
-
-    if (!parent_id) {
-      await commentModel.create({
-        id, article_id, user_id,
-        content: comment
-      })
-      res.status(201).redirect(`/${article_id}#comments-section`)
-    }
-
-    await commentModel.create({
-      id, article_id, user_id, parent_id,
-      content: comment
-    })
-
-    res.status(201).redirect(`/${article_id}#comments-section`)
-    
-  } catch (error) {
-    console.error('Error in postComment:', error.message)
-    res.status(500).render('error/error', err500)
-  }
-}
-
 
 module.exports = {
-  getAllJobs, getDetailJob, postComment
+  getAllJobs, getDetailJob
 }

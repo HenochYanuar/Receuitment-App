@@ -12,8 +12,24 @@
           </li>
         </ul>
         <div class="d-flex flex-wrap gap-2 mt-4">
-          <a href="/" class="btn btn-warning rounded-pill px-4 mr-1"><i class="fas fa-chevron-left"></i> Back</a>
-          <a href="/admin/applications/<%= context.job.id %>" class="btn btn-outline-info rounded-pill px-4 ml-1"><i class="fas fa-external-link-alt"></i> Apply</a>
+          <% if (!context.hasApplied) { %>
+            <a href="/" class="btn btn-outline-warning rounded-pill px-4 mr-1"><i class="fas fa-chevron-left"></i> Back</a>
+            <a href="/admin/applications/<%= context.job.id %>" class="btn btn-outline-info rounded-pill px-4 ml-1">
+              <i class="fas fa-external-link-alt"></i> Apply
+            </a>
+          <% } else { %>
+            <a href="/user/profile/<%= context.user.id %>" class="btn btn-outline-warning rounded-pill px-4 mr-1"><i class="fas fa-chevron-left"></i> Back</a>
+            <span class="text-white px-4 py-2 rounded-pill text-capitalize
+              <%= context.application[0].status === 'submitted' ? 'bg-primary' : 
+                  context.application[0].status === 'reviewed' ? 'bg-secondary' :
+                  context.application[0].status === 'interview' ? 'bg-warning' :
+                  context.application[0].status === 'hired' ? 'bg-success' :
+                  context.application[0].status === 'rejected' ? 'bg-danger' : 
+                  'bg-light text-dark' 
+              %>">
+              <%= context.application[0].status %>
+            </span>
+          <% } %>
         </div>
       </div>
 

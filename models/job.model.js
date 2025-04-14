@@ -39,29 +39,46 @@ const getAllJobs = async (page, limit, search) => {
   }
 }
 
-const getAllArticlesByQuery = async (query) => {
+const getUserJobs = async (page, limit, search, user_id) => {
   try {
-    const articles = await db('articles')
-      .select(
-        'articles.*',
-        'tags.tag as tag_name',
-        db('comments')
-          .count('*')
-          .whereRaw('comments.article_id = articles.id')
-          .as('comment_count')
-      )
-      .leftJoin('tags', 'articles.tags_id', 'tags.id')
+    const offset = (page - 1) * limit
+
+    const jobs = await db('jobs')
+      .join('applications', 'jobs.id', 'applications.job_id')
+      .select('jobs.*')
+      .where('applications.user_id', user_id)
       .where(function () {
-        this.where(db.raw('LOWER(articles.title)'), 'like', `%${query.toLowerCase()}%`)
-          .orWhere(db.raw('LOWER(articles.content)'), 'like', `%${query.toLowerCase()}%`)
-          .orWhere(db.raw('LOWER(articles.category)'), 'like', `%${query.toLowerCase()}%`)
-          .orWhere(db.raw('LOWER(tags.tag)'), 'like', `%${query.toLowerCase()}%`);
+        if (search) {
+          this.where(db.raw('LOWER(title)'), 'like', `%${search.toLowerCase()}%`)
+            .orWhere(db.raw('LOWER(description)'), 'like', `%${search.toLowerCase()}%`)
+            .orWhere(db.raw('LOWER(type)'), 'like', `%${search.toLowerCase()}%`)
+        }
       })
-      .orderBy('articles.created_at', 'desc')
-    return articles
+      .groupBy('jobs.id')
+      .andWhere({ isExpired: false })
+      .orderBy('updated_at', 'desc')
+      .limit(limit)
+      .offset(offset)
+
+    const [{ count }] = await db('jobs')
+      .join('applications', 'jobs.id', 'applications.job_id')
+      .select('jobs.*')
+      .where('applications.user_id', user_id)
+      .where(function () {
+        if (search) {
+          this.where(db.raw('LOWER(title)'), 'like', `%${search.toLowerCase()}%`)
+            .orWhere(db.raw('LOWER(description)'), 'like', `%${search.toLowerCase()}%`)
+            .orWhere(db.raw('LOWER(type)'), 'like', `%${search.toLowerCase()}%`)
+        }
+      })
+      .groupBy('jobs.id')
+      .andWhere({ isExpired: false })
+      .count('jobs.id as count')
+
+    return { jobs, totalItems: parseInt(count) }
 
   } catch (error) {
-    throw new Error('Error geting all articles by query: ' + error.message)
+    throw new Error('Error getting all user jobs' + error.message)
   }
 }
 
@@ -76,5 +93,5 @@ const getOne = async (id) => {
 }
 
 module.exports = {
-  getAllJobs, getOne, getAllArticlesByQuery
+  getAllJobs, getUserJobs, getOne
 }
