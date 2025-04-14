@@ -1,55 +1,81 @@
 <!DOCTYPE html>
 <html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Recruitment App Winnicode</title>
-    <link rel="shortcut icon" href="/assets/img/logo.png" />
+  <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Recruitment App Winnicode</title>
+      <link rel="shortcut icon" href="/assets/img/logo.png" />
 
-    <!-- Google Font: Source Sans Pro -->
-    <link rel="stylesheet"
-        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-    <!-- Font Awesome Icons -->
-    <link rel="stylesheet"
-        href="/assets/plugins/fontawesome-free/css/all.min.css">
-    <!-- Theme style -->
-    <link rel="stylesheet" href="/assets/assets/dist/css/adminlte.min.css">
+      <!-- Google Font: Source Sans Pro -->
+      <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+      <!-- Font Awesome Icons -->
+      <link rel="stylesheet"
+          href="/assets/plugins/fontawesome-free/css/all.min.css">
+      <!-- Theme style -->
+      <link rel="stylesheet" href="/assets/assets/dist/css/adminlte.min.css">
 
-    <link rel="stylesheet" href="/assets/css/layoutstyle.css">
+      <link rel="stylesheet" href="/assets/css/layoutstyle.css">
 
-    <!-- <link rel="stylesheet" href="/assets/css/detail.css"> -->
+      <!-- <link rel="stylesheet" href="/assets/css/detail.css"> -->
 
-    <link rel="stylesheet" href="/assets/css/profile.css">
+      <link rel="stylesheet" href="/assets/css/profile.css">
 
-    <link rel="stylesheet" href="/assets/css/formUpdate.css">
-</head>
-<body>
+      <link rel="stylesheet" href="/assets/css/formUpdate.css">
+  </head>
+  <body>
 
-  <header class="app-header">
-    <nav class="navbar">
-      <div class="navbar-left">
-        <div><img class="logo" src="http://localhost:8000/img/banner-logo.png" alt="logo-img"></div>
-        <ul class="nav-links">
-        <li><a href="">Beranda</a></li>
-        <li>
-            <form action="/" method="GET" class="form-inline">
+    <header class="app-header">
+      <nav class="navbar">
+        <div class="navbar-left">
+          <div><img class="logo" src="/assets/img/banner-logo.png" alt="logo-img"></div>
+
+          <!-- Tombol hamburger -->
+          <div class="hamburger" onclick="toggleMenu()">
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+          
+          <ul class="nav-links">
+            <li><a href="/">Beranda</a></li>
+            <li>
+              <form action="/" method="GET" class="form-inline">
                 <input class="form-control" type="text" name="search" placeholder="Search job vacancy..." value="<%= context.search %>">
                 <button type="submit" class="submit-btn"><i class="fas fa-search"></i></button>
-            </form>
-        </li>
-        </ul>
-      </div>
-      <div class="navbar-right">
-        <img src="assets/img/man.png" alt="Profile" class="avatar">
-      </div>
-    </nav>
-      
-  </header>
+              </form>
+            </li>
+          </ul>
 
-  <main class="job-list">
-    <%- body %>
-  </main>
+          <!-- Menu mobile -->
+          <ul class="nav-links-mobile" id="mobileMenu">
+            <li><a href="">Beranda</a></li>
+            <li>
+              <form action="/" method="GET" class="form-inline">
+                <input class="form-control" type="text" name="search" placeholder="Search job vacancy..." value="<%= context.search %>">
+                <button type="submit" class="submit-btn"><i class="fas fa-search"></i></button>
+              </form>
+            </li>
+          </ul>
+        </div>
+        <div class="navbar-right">
+          <img src="assets/img/man.png" alt="Profile" class="avatar">
+        </div>
+      </nav>
+        
+    </header>
 
-</body>
+    <main class="job-list">
+      <%- body %>
+    </main>
+
+    <script>
+      function toggleMenu() {
+        const menu = document.getElementById('mobileMenu');
+        menu.classList.toggle('show');
+      }
+    </script>    
+
+  </body>
 </html>
 
