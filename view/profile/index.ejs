@@ -1,37 +1,104 @@
-<div class="profile-container">
-  <div class="profile-body">
-    <div class="profile-data">
-      <p class="username"><%= context.user.username %></p>
-      <p class="name"><%= context.user.name || context.user.username %></p>
-    </div>
-    <div class="logout-btn">
-      <a href="/user/logout">Logout</a>
-    </div>
-  </div>
-  <p class="email"><%= context.user.email %></p>
-  <a href="/user/profile/update/<%= context.user.id %>">
-    <div class="profile-action">
-      <span>
-        Edit Profile
-      </span>
-    </div>
-  </a>
-</div>
-<div class="comments-user">
-  <div>
-    <h3>Comments</h3>
-  </div>
-  <% context.comments.forEach(comment => {%>
-  <div class="articel-comment-item">
-    <a href="/<%= comment.article_id %>#comment<%= comment.id %>">
-      <div>
-        <img src="http://localhost:8000/<%= comment.image_url %>" alt="Article Image" class="article_img">
-        <p class="title-on-comment"><%= comment.title %></p>
-        <p><strong class="username-lite"><%= comment.username %></strong><br><%= comment.content %></p>
+e<div class="container my-4">
+  <div class="card border shadow rounded-4 p-4 bg-white">
+    <div class="row justify-content-between align-items-start pl-3 pr-3 pt-4">
+      <!-- Kiri: Informasi pengguna -->
+      <div class="col-lg-8 col-md-7 col-sm-12 ">
+        <h3 class="fw-bold mb-5 mt-3 border-bottom " style="color: #000336;">@<%= context.user.username %></h3>
+        <p class="mb-1 text-capitalize"><i class="fas fa-user pr-1 mb-2"> </i> <%= context.profile.name || context.user.username %></p>
+        <p class="mb-1"><i class="fas fa-envelope-open pr-1 mb-2"> </i> <%= context.user.email %></p>
+        <p class="mb-1"><i class="fas fa-phone pr-1 mb-2"> </i> <%= context.profile.phone %></p>
+        <p class="mb-1"><i class="fas fa-map pr-1 mb-2"> </i> <%= context.profile.address %></p>
+        <a href="<%= context.resume.file_url %>" target="_blank" class="btn btn-outline-success p-2 px-4 mt-3 mb-3">
+          <i class="fas fa-external-link-alt"> </i> Resume
+        </a>
       </div>
-      <div>
+
+      <div class="col-lg-4 col-md-5 col-sm-12 d-flex justify-content-center mt-3">
+        <!-- Kanan: Tombol Update -->
+        <a href="/user/edit-profile" class="btn btn-warning p-2 px-4 ml-1">
+          <i class="	fas fa-pencil-alt"></i> Update
+        </a>
+        <!-- Kanan: Tombol logout -->
+        <a href="/user/logout" class="btn btn-danger p-2 px-4 ml-1">
+          <i class="fas fa-sign-out-alt"> </i> Logout
+        </a>
       </div>
-    </a>
+    </div>
+    
   </div>
-  <% }) %>
+  <div class="card border shadow rounded-4 p-4 bg-white">
+    <div class="card-header">
+      <h2 class="text-center">Your Jobs</h2>
+    </div>
+    <div class="card-body">
+      <div class="card-body bg-white">
+        <div class="row mb-4">
+          <div class="col-md-9">
+          </div>
+          <div class="col-md-3">
+            <form method="GET" action="">
+              <div class="input-group">
+                <input type="text" class="form-control border" name="search" placeholder="Search apllication..." value="<%= context.search %>">
+                <div class="input-group-append">
+                  <button class="btn btn-secondary" type="submit"><i class="fa fa-search"></i></button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+        <div class="row">
+          <% if (context.jobs && context.jobs.length > 0) { %>
+            <% context.jobs.forEach(job => { %>
+              <!-- CARD START -->
+              <div class="job-card">
+                <a href="/<%= job.id %>">
+                  <h3 class="job-title"><%= job.title %></h3>
+                  <p class="job-type fulltime text-warning mt-2"><i class="far fa-user"></i> <%= job.type %></p>
+                  <p class="salary"><i class="far fa-money-bill-alt"></i> <%= formatCurrency(job.salary_min) %> – <%= formatCurrency(job.salary_max)  %>/month</p>
+                  <p class="desc mt-4 text-dark"><span class="text-danger"><i class="fas fa-thumbtack"></i></span> <%= job.description %></p>
+                  <p class="text-primary small mt-2"><%= job.timeDifference %></p>
+                  <p class="badge small mt-2 p-2
+                    <%= job.status === 'submitted' ? 'bg-primary' : 
+                        job.status === 'reviewed' ? 'bg-secondary' :
+                        job.status === 'interview' ? 'bg-warning' :
+                        job.status === 'hired' ? 'bg-success' :
+                        job.status === 'rejected' ? 'bg-danger' : 
+                        'bg-light text-dark' 
+                    %>">
+                    <%= job.status %>
+                  </p>
+                </a>
+              </div>
+              <!-- CARD END -->
+            <% }) %>
+          <% } else { %>
+            <p class=" text-bold bg-danger p-3">We don't have the job you want !!.</p>
+          <% } %>
+        </div>
+        <div style="display: flex; flex-direction:row-reverse;">
+          <div class="pagination">
+            <% if (context.currentPage > 1) { %>
+            <a class="btn btn-secondary mr-1"
+              href="?page=<%= context.currentPage - 1 %>&limit=<%= context.limit %>">Previous</a>
+            <% } %>
+      
+            <% for (let i = 1; i <= context.totalPages; i++) { %>
+            <% if (i === context.currentPage) { %>
+            <span class="btn btn-primary mr-1"><%= i %></span>
+            <% } else { %>
+            <a class="btn btn-light mr-1"
+              href="?page=<%= i %>&limit=<%= context.limit %>"><%= i %></a>
+            <% } %>
+            <% } %>
+      
+            <% if (context.currentPage < context.totalPages) { %>
+            <a class="btn btn-secondary"
+              href="?page=<%= context.currentPage + 1 %>&limit=<%= context.limit %>">Next</a>
+            <% } %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
+
