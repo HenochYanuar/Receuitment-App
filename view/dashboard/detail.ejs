@@ -1,25 +1,37 @@
-<div class="card shadow rounded-4 p-5 mb-4 ml-5 mr-5">
-  <div class="d-flex justify-content-between align-items-start">
-    <div class="pl-4">
-      <h2 class="fw-bold mt-3 text-dark"><%= context.job.title %></h2>
-      <ul class="list-unstyled text-muted mb-2">
-        <li class="text-primary large mb-2 "><i class="fas fa-circle"></i> <%= context.job.type %></li>
-        <li class="mb-4"><i class="far fa-money-bill-alt"></i><%= formatCurrency(context.job.salary_min) %> – <%= formatCurrency(context.job.salary_max)  %>/month</li>
-      </ul>
-      <div class="d-flex gap-2 mt-5 ">
-        <a href="/admin/jobs/edit/<%= context.job.id %>" class="btn btn-warning rounded-pill px-4 mr-2"><i class="fas fa-chevron-left"></i> Back</a>
-        <a href="/admin/applications/<%= context.job.id %>" class="btn btn-outline-info rounded-pill px-4 mr-2"><i class="fas fa-address-card"></i> Apply</a>
+<div class="container my-4">
+  <div class="card shadow rounded-4 p-4">
+    <div class="row justify-content-between align-items-start">
+      <!-- Kiri: Detail Pekerjaan -->
+      <div class="col-lg-8 col-md-7 col-sm-12">
+        <h2 class="fw-bold mt-3 text-dark"><%= context.job.title %></h2>
+        <ul class="list-unstyled text-muted mb-2">
+          <li class="text-primary fs-5 mb-2"><i class="fas fa-circle"></i> <%= context.job.type %></li>
+          <li class="mb-4">
+            <i class="far fa-money-bill-alt"></i>
+            <%= formatCurrency(context.job.salary_min) %> – <%= formatCurrency(context.job.salary_max) %>/month
+          </li>
+        </ul>
+        <div class="d-flex flex-wrap gap-2 mt-4">
+          <a href="/" class="btn btn-warning rounded-pill px-4 mr-1"><i class="fas fa-chevron-left"></i> Back</a>
+          <a href="/admin/applications/<%= context.job.id %>" class="btn btn-outline-info rounded-pill px-4 ml-1"><i class="fas fa-external-link-alt"></i> Apply</a>
+        </div>
       </div>
-    </div>
-    <div>
-      <p class="badge bg-primary border border-info p-2 bold mb-5"> <%= context.job.timeDifference %></p>
-    </div>
-  </div>
 
-  <hr class="my-4">
+      <!-- Kanan: Waktu -->
+      <div class="col-lg-4 col-md-5 col-sm-12 d-flex justify-content-end align-items-start mt-3 mt-md-0">
+        <span class="badge bg-primary border border-info p-2 fw-bold">
+          <%= context.job.timeDifference %>
+        </span>
+      </div>
+      
+    </div>
 
-  <div class="pl-4 text-dark">
-    <h5 class="fw-semibold">Job Descriptions</h5> <hr>
-    <p class="text-muted"><%- context.job.description %></p>
+    <hr class="my-4">
+
+    <div class="text-dark">
+      <h5 class="fw-semibold">Job Details</h5>
+      <hr>
+      <p class="text-muted"><%- context.job.description %></p>
+    </div>
   </div>
 </div>
