@@ -49,7 +49,7 @@
 
           <!-- Menu mobile -->
           <ul class="nav-links-mobile" id="mobileMenu">
-            <li><a href="">Beranda</a></li>
+            <li><a href="/">Beranda</a></li>
             <li>
               <form action="/" method="GET" class="form-inline">
                 <input class="form-control" type="text" name="search" placeholder="Search job vacancy..." value="<%= context.search %>">
@@ -59,7 +59,9 @@
           </ul>
         </div>
         <div class="navbar-right">
-          <img src="assets/img/man.png" alt="Profile" class="avatar">
+          <a href="/user/profile/<%= context.user.id %>" >
+            <img src="/assets/img/man.png" alt="Profile" class="avatar">
+          </a>
         </div>
       </nav>
         

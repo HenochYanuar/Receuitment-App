@@ -53,12 +53,17 @@
 .nav-links li {
   margin-top: 20px;
   font-size: 1.25rem;
+  list-style-type: none;
 }
 
 .nav-links li a{
   text-decoration: none;
-  color: white;
+  color: #ff5cc1;
   font-weight: 500;
+}
+
+.nav-links li a:hover {
+  color: #007bff;
 }
 
 .form-inline {
@@ -138,6 +143,15 @@
 
 .nav-links-mobile li {
   margin-top: 10px;
+  list-style-type: none;
+}
+
+.nav-links-mobile li a {
+  color: #ff5cc1;
+}
+
+.nav-links-mobile li a:hover {
+  color: #007bff;
 }
 
 /* Responsif untuk layar kecil */
