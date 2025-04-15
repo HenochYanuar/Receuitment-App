@@ -93,6 +93,15 @@ const getOne = async (id) => {
   }
 }
 
+const createApplication = async (data) => {
+  try {
+    return await db('applications').insert(data)
+
+  } catch (error) {
+    throw new Error('Error failed create new application' + error.message)
+  }
+ }
+
 module.exports = {
-  getAllJobs, getUserJobs, getOne
+  getAllJobs, getUserJobs, getOne, createApplication
 }

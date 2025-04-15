@@ -2,7 +2,9 @@ const { decode } = require('html-entities')
 const jobModel = require('../models/job.model')
 const userModel = require('../models/user.model')
 const profileModel = require('../models/profile.model')
+const resumeModel = require('../models/resume.model')
 const applicationModel = require('../models/application.model')
+const idCreator = require('../utils/idCreator')
 const moment = require('moment')
 const { err500, err404, err403 } = require('../utils/error')
 const formatCurrency = require('../utils/formatCurrency')
@@ -85,6 +87,7 @@ const getDetailJob = async (req, res) => {
   try {
     const user = await userModel.findByEmail(req.user.email)
     const profile = await profileModel.getUserProfile(user.id)
+    const resume = await resumeModel.getOne(user.id)
     
     if (!user) {
       return res.status(404).render('error/error', err404)
@@ -131,7 +134,8 @@ const getDetailJob = async (req, res) => {
       hasApplied,
       application,
       from,
-      profile
+      profile,
+      resume
     }
     
     const title = 'Detail Job Vacancy'
@@ -149,7 +153,30 @@ const getDetailJob = async (req, res) => {
   }
 }
 
+const postApplyJob = async (req, res) => {
+  try {
+    const user = await userModel.findByEmail(req.user.email)
+
+    if (!user ) {
+      return res.status(404).render('error/error', err404)
+    }
+
+    const id = idCreator.createID()
+
+    await jobModel.createApplication({
+      id,
+      user_id: user.id,
+      job_id: req.params.id,
+      status: 'submitted'
+    })
+
+    res.status(201).redirect(`/user/profile/${user.id}/#jobs`)
+
+  } catch (error) {
+    
+  }
+}
 
 module.exports = {
-  getAllJobs, getDetailJob
+  getAllJobs, getDetailJob, postApplyJob
 }
