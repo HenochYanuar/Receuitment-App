@@ -23,6 +23,20 @@ const create = async (data) => {
   }
 }
 
+const updatedUser = async (id, username) => {
+  try {
+    return await db('users')
+      .where('id', id)
+      .update({
+        username
+      })
+
+  } catch (error) {
+    throw new Error('Error failed posts the update profile' + error.message)
+
+  }
+}
+
 const verify = async (email, isRegister) => {
   try {
       return await db('users').where({ email }).update({ isRegister })
@@ -32,5 +46,5 @@ const verify = async (email, isRegister) => {
 }
 
 module.exports = {
-  findByEmail, create, verify
+  findByEmail, create, updatedUser, verify
 }

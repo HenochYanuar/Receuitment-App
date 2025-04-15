@@ -15,13 +15,22 @@ const getUserProfile = async (id) => {
   }
 }
 
-const updatedUser = async (id, username, name) => {
+const createProfile = async (data) => {
   try {
-    return await db('users')
+    return await db('user_details').insert(data)
+
+  } catch (error) {
+    throw new Error('Error failed create new user profile' + error.message)
+
+  }
+}
+
+const updateProfile = async (id, name, phone, address) => {
+  try {
+    return await db('user_details')
       .where('id', id)
       .update({
-        username,
-        name
+        name, phone, address
       })
 
   } catch (error) {
@@ -31,5 +40,5 @@ const updatedUser = async (id, username, name) => {
 }
 
 module.exports = {
-  getUserProfile, updatedUser
+  getUserProfile, createProfile, updateProfile
 }

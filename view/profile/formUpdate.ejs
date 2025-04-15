@@ -1,12 +1,21 @@
-<div class="form-container">
+<div class="form-container shadow">
   <div class="form-header">
-    <h3>Update Profile</h3>
-    <p>Customize your account with the correct data</p>
+    <h3 class="">Update Profile</h3>
+    <p>Customize your profile account with the correct data</p>
   </div>
+  <hr>
   <div class="profile-form">
-    <form action="/user/profile/update?_method=PATCH" method="POST">
+    <form action="/user/profile/update" method="POST">
       <table>
         <input type="text" name="id" value="<%= context.user.id %>" readonly hidden>
+        <tr>
+          <td class="label">
+            <label for="email">E-mail</label>
+          </td>
+          <td>
+            <input type="text" id="email" name="email" value="<%= context.user.email %>" readonly>
+          </td>
+        </tr>
         <tr>
           <td class="label">
             <label for="username">Username</label>
@@ -20,24 +29,54 @@
             <label for="name">Name</label>
           </td>
           <td>
-            <input type="text" id="name" name="name" value="<%= context.user.name || context.user.username %>">
+            <input class="text-capitalize" type="text" id="name" name="name" value="<%= context.profile ? context.profile.name : '' %>" required>
           </td>
         </tr>
         <tr>
           <td class="label">
-            <label for="email">E-mail</label>
+            <label for="phone">Phone</label>
           </td>
           <td>
-            <input type="text" id="email" name="email" value="<%= context.user.email %>" readonly>
+            <input type="text" minlength="10" maxlength="13" pattern="\d*" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="ex: 0857xxxxxxxx" id="phone" name="phone" value="<%= context.profile ? context.profile.phone : '' %>" required>
+          </td>
+        </tr>
+        <tr>
+          <td class="label">
+            <label for="address">Address</label>
+          </td>
+          <td>
+            <textarea class="text-secondary" type="text" id="address" name="address" required><%= context.profile ? context.profile.address : '' %></textarea>
           </td>
         </tr>
         <tr>
           <td></td>
           <td>
-            <button type="submit" class="save-button">Save</button>
+            <button type="submit" class="save-button"><i class="fas fa-save"></i> Save</button>
           </td>
         </tr>
       </table>
     </form>
+    <hr>
+    <form action="/user/profile/resume" method="POST" enctype="multipart/form-data">
+      <table>
+        <tr>
+          <td class="label">
+            <label for="resume">Resume</label>
+          </td>
+          <td>
+            <input type="file" name="resume" id="resume" accept=".pdf, .doc, .docx">
+          </td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>
+            <button type="submit" class="save-button"><i class="fas fa-upload"></i> Upload</button>
+          </td>
+        </tr>
+      </table>
+    </form>
+    <div>
+      <a class="btn btn-warning" href="/user/profile/<%= context.user.id %>"><i class="fas fa-chevron-left"></i>Back</a>
+    </div>
   </div>
 </div>
