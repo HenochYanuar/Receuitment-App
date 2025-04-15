@@ -1,6 +1,7 @@
 const { decode } = require('html-entities')
 const jobModel = require('../models/job.model')
 const userModel = require('../models/user.model')
+const profileModel = require('../models/profile.model')
 const applicationModel = require('../models/application.model')
 const moment = require('moment')
 const { err500, err404, err403 } = require('../utils/error')
@@ -12,6 +13,7 @@ const layout = 'layout/index'
 const getAllJobs = async (req, res) => {
   try {
     const user = await userModel.findByEmail(req.user.email)
+    const profile = await profileModel.getUserProfile(user.id)
 
     if (!user) {
       return res.status(404).render('error/error', err404)
@@ -60,7 +62,8 @@ const getAllJobs = async (req, res) => {
       totalPages,
       totalItems,
       limit,
-      search
+      search,
+      profile
     }
 
     const title = 'Dashboard | Job Vacancies'
@@ -81,6 +84,7 @@ const getAllJobs = async (req, res) => {
 const getDetailJob = async (req, res) => {
   try {
     const user = await userModel.findByEmail(req.user.email)
+    const profile = await profileModel.getUserProfile(user.id)
     
     if (!user) {
       return res.status(404).render('error/error', err404)
@@ -91,6 +95,8 @@ const getDetailJob = async (req, res) => {
     if (!job) {
       return res.status(404).render('error/error', err404)
     }
+
+    const from = req.query.from || '/'
 
     const application = await applicationModel.findByUserAndJob(user.id, job.id)
 
@@ -123,7 +129,9 @@ const getDetailJob = async (req, res) => {
         timeDifference: timeText
       },
       hasApplied,
-      application
+      application,
+      from,
+      profile
     }
     
     const title = 'Detail Job Vacancy'

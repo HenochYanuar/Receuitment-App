@@ -59,7 +59,11 @@
           </ul>
         </div>
         <div class="navbar-right">
+          <% if (context.profile) { %>
           <a href="/user/profile/<%= context.user.id %>" >
+          <% } else { %>
+          <a href="/user/profile/update/<%= context.user.id %>" >
+          <% } %>
             <img src="/assets/img/man.png" alt="Profile" class="avatar">
           </a>
         </div>

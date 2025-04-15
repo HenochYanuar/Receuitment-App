@@ -4,7 +4,7 @@
       <% context.jobs.forEach(job => { %>
         <!-- CARD START -->
         <div class="job-card">
-          <a href="/<%= job.id %>">
+          <a href="/<%= job.id %>?from=/">
             <h3 class="job-title"><%= job.title %></h3>
             <p class="job-type fulltime text-warning mt-2"><i class="far fa-user"></i> <%= job.type %></p>
             <p class="salary"><i class="far fa-money-bill-alt"></i> <%= formatCurrency(job.salary_min) %> – <%= formatCurrency(job.salary_max)  %>/month</p>
