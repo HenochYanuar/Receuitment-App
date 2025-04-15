@@ -1,7 +1,6 @@
 require('dotenv').config()
 const express = require('express')
 const expressLayouts = require('express-ejs-layouts')
-const jwt = require('jsonwebtoken')
 const cookieParser = require('cookie-parser')
 const path = require('path')
 const methodOverride = require('method-override')
