@@ -49,36 +49,37 @@ const getUserJobs = async (page, limit, search, user_id) => {
       .where('applications.user_id', user_id)
       .where(function () {
         if (search) {
-          this.where(db.raw('LOWER(title)'), 'like', `%${search.toLowerCase()}%`)
-            .orWhere(db.raw('LOWER(description)'), 'like', `%${search.toLowerCase()}%`)
-            .orWhere(db.raw('LOWER(type)'), 'like', `%${search.toLowerCase()}%`)
+          this.whereRaw('LOWER(title) LIKE ?', [`%${search.toLowerCase()}%`])
+            .orWhereRaw('LOWER(description) LIKE ?', [`%${search.toLowerCase()}%`])
+            .orWhereRaw('LOWER(type) LIKE ?', [`%${search.toLowerCase()}%`])
         }
       })
-      .groupBy('jobs.id')
       .andWhere({ isExpired: false })
-      .orderBy('updated_at', 'desc')
+      .groupBy('jobs.id', 'applications.updated_at')
+      .orderBy('applications.updated_at', 'desc')
       .limit(limit)
       .offset(offset)
 
     const [{ count }] = await db('jobs')
       .join('applications', 'jobs.id', 'applications.job_id')
-      .select('jobs.*')
       .where('applications.user_id', user_id)
       .where(function () {
         if (search) {
-          this.where(db.raw('LOWER(title)'), 'like', `%${search.toLowerCase()}%`)
-            .orWhere(db.raw('LOWER(description)'), 'like', `%${search.toLowerCase()}%`)
-            .orWhere(db.raw('LOWER(type)'), 'like', `%${search.toLowerCase()}%`)
+          this.whereRaw('LOWER(title) LIKE ?', [`%${search.toLowerCase()}%`])
+            .orWhereRaw('LOWER(description) LIKE ?', [`%${search.toLowerCase()}%`])
+            .orWhereRaw('LOWER(type) LIKE ?', [`%${search.toLowerCase()}%`])
         }
       })
-      .groupBy('jobs.id')
       .andWhere({ isExpired: false })
-      .count('jobs.id as count')
+      .countDistinct('jobs.id as count')
 
-    return { jobs, totalItems: parseInt(count) }
+    return {
+      jobs,
+      totalItems: parseInt(count)
+    }
 
   } catch (error) {
-    throw new Error('Error getting all user jobs' + error.message)
+    throw new Error('Error getting all user jobs: ' + error.message)
   }
 }
 

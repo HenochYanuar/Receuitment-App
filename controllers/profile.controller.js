@@ -6,6 +6,8 @@ const resumeModel = require('../models/resume.model')
 const jobModel = require('../models/job.model')
 const applicationModel = require('../models/application.model')
 const formatCurrency = require('../utils/formatCurrency')
+const saveFileMiddleware = require('../middleware/saveFileMiddleware')
+const idCreator = require('../utils/idCreator')
 const { err500, err404 } = require('../utils/error')
 const layout = 'layout/index'
 
@@ -28,14 +30,14 @@ const getUserProfile = async (req, res) => {
 
     const applications = await applicationModel.getUserApplications(user.id)
     
-    const jobsFormatted = jobs.map((job, index) => {
+    const jobsFormatted = jobs.map((job) => {
       const cleanedDesc = decode(job.description.replace(/<\/?[^>]+(>|$)/g, ''))
-
-      const status = applications[index].status
-
-      const updatedAt = moment(job.updated_at)
+    
+      const relatedApp = applications.find(app => app.job_id === job.id)
+    
+      const updatedAt = relatedApp ? moment(relatedApp.updated_at) : moment(job.updated_at)
       const now = moment()
-
+    
       let timeText = ''
       const diffInYears = now.diff(updatedAt, 'years')
       const diffInMonths = now.diff(updatedAt, 'months')
@@ -43,7 +45,7 @@ const getUserProfile = async (req, res) => {
       const diffInDays = now.diff(updatedAt, 'days')
       const diffInHours = now.diff(updatedAt, 'hours')
       const diffInMinutes = now.diff(updatedAt, 'minutes')
-
+    
       if (diffInYears >= 1) timeText = `${diffInYears} tahun yang lalu`
       else if (diffInMonths >= 1) timeText = `${diffInMonths} bulan yang lalu`
       else if (diffInWeeks >= 1) timeText = `${diffInWeeks} minggu yang lalu`
@@ -51,20 +53,21 @@ const getUserProfile = async (req, res) => {
       else if (diffInHours >= 1) timeText = `${diffInHours} jam yang lalu`
       else if (diffInMinutes >= 1) timeText = `${diffInMinutes} menit yang lalu`
       else timeText = 'Baru saja'
-
+    
       return {
         ...job,
         description: cleanedDesc,
         timeDifference: timeText,
-        status
+        applicationStatus: relatedApp ? relatedApp.status : null,
+        sortTime: updatedAt
       }
     })
 
-    context = {
+    const context = {
       user, 
       profile, 
       resume,
-      jobs: jobsFormatted,
+      jobs: jobsFormatted.sort((a, b) => moment(b.sortTime).valueOf() - moment(a.sortTime).valueOf()),
       currentPage: page,
       totalPages,
       totalItems,
@@ -85,13 +88,14 @@ const getUserProfile = async (req, res) => {
 const formUpdateProfile = async (req, res) => {
   try {
     const user = await userModel.findByEmail(req.user.email)
+    const profile = await profileModel.getUserProfile(user.id)
 
     if (!user) {
       return res.status(404).render('error/error', err404)
     }
 
     context = {
-      user
+      user, profile
     }
 
     const title = 'Update Profile'
@@ -106,20 +110,29 @@ const formUpdateProfile = async (req, res) => {
 
 const postUpdateUserProfile = async (req, res) => {
   try {
-    const { id, username, name, email } = req.body
-    const user = await userModel.findByEmail(email || req.user.email)
+    const { id, username, name, email, phone, address } = req.body
+    const user = await userModel.findByEmail(req.user.email || email)
 
     if (!user) {
       return res.status(404).render('error/error', err404)
     }
 
-    if( !username ) {
-      return res.status(400).redirect(`/user/profile/update/${id}`)
+    await userModel.updatedUser(id, username)
+
+    const profile = await profileModel.getUserProfile(user.id)
+
+    if (!profile) {
+      const profile_id = idCreator.createID()
+
+      await profileModel.createProfile({
+        id: profile_id, user_id:id, name, phone, address
+      })
+    } else {
+      const id = profile.id
+      await profileModel.updateProfile(id, name, phone, address)
     }
 
-    await profileModel.updatedUser(id, username, name)
-
-    res.status(201).redirect(`/user/profile/${id}`)
+    res.status(201).redirect(`/user/profile/update/${id}`)
 
   } catch (error) {
     console.error('Error updating user profile:', error.message)
@@ -127,6 +140,45 @@ const postUpdateUserProfile = async (req, res) => {
   }
 }
 
+const postUpdateUserResume = async (req, res) => {
+  try {
+    const user = await userModel.findByEmail(req.user.email)
+
+    if (!req.file) {
+      return res.status(404).render('error/error', err404).send('File not uploaded')
+    }
+
+    const resume = await resumeModel.getOne(user.id)
+
+    if(!resume) {
+      const id = idCreator.createID()
+    
+      await resumeModel.createResume({
+        id,
+        user_id: user.id,
+        file_url: `http://localhost:3000/assets/user_resumes/files/${req.file.filename}`
+      })
+    } else {
+      const file_url = `http://localhost:3000/assets/user_resumes/files/${req.file.filename}`
+      await resumeModel.updateResume(
+        resume.id, 
+        file_url
+      )
+    }
+
+    
+
+    res.status(201).redirect(`/user/profile/${user.id}`)
+
+  } catch (error) {
+    console.error('Error updating user resume:', error.message)
+    res.status(500).render('error/error', err500)
+  }
+}
+
+
+const uploadMiddleware = saveFileMiddleware.uploadUserResume
+
 module.exports = {
-  getUserProfile, formUpdateProfile, postUpdateUserProfile
+  getUserProfile, formUpdateProfile, postUpdateUserProfile, postUpdateUserResume, uploadMiddleware
 }
