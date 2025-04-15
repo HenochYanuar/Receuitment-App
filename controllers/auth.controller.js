@@ -92,8 +92,7 @@ const registerPost = async (req, res) => {
 
         user = await userModel.create({
           id, username, email,
-          name: null,
-          role: 'user',
+          role: 'jobseeker',
           password: hashPassword,
           isRegister: isActive
         })
