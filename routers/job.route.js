@@ -8,7 +8,7 @@ jobRouter.use(authenticateJWT)
 
 jobRouter.get('/', jobController.getAllJobs)
 jobRouter.get('/:id', jobController.getDetailJob)
-// jobRouter.post('/', jobController.postComment)
+jobRouter.get('/apply/:id', jobController.postApplyJob)
 
 module.exports = {
   jobRouter
