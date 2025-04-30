@@ -8,6 +8,9 @@ const applicationModel = require('../models/application.model')
 const formatCurrency = require('../utils/formatCurrency')
 const saveFileMiddleware = require('../middleware/saveFileMiddleware')
 const idCreator = require('../utils/idCreator')
+const path = require('path')
+const fs = require('fs')
+const { resumeUpConfig } = require('../config/resumeUpConfig')
 const { err500, err404 } = require('../utils/error')
 const layout = 'layout/index'
 
@@ -145,34 +148,32 @@ const postUpdateUserResume = async (req, res) => {
     const user = await userModel.findByEmail(req.user.email)
 
     if (!req.file) {
-      return res.status(404).render('error/error', err404).send('File not uploaded')
+      return res.status(400).send('File not uploaded')
     }
 
     const resume = await resumeModel.getOne(user.id)
 
-    if(!resume) {
+    const filePath = path.join(__dirname, '..', 'public/assets/user_resumes/files', req.file.filename)
+    const publicUrl = await resumeUpConfig(filePath, req.file.filename)
+
+    if (!resume) {
       const id = idCreator.createID()
-    
       await resumeModel.createResume({
         id,
         user_id: user.id,
-        file_url: `https://receuitment-app.vercel.app/assets/user_resumes/files/${req.file.filename}`
+        file_url: publicUrl
       })
     } else {
-      const file_url = `https://receuitment-app.vercel.app/assets/user_resumes/files/${req.file.filename}`
-      await resumeModel.updateResume(
-        resume.id, 
-        file_url
-      )
+      await resumeModel.updateResume(resume.id, publicUrl)
     }
 
-    
+    // Hapus file lokal setelah upload selesai (opsional)
+    fs.unlinkSync(filePath)
 
-    res.status(201).redirect(`/user/profile/${user.id}`)
-
+    res.redirect(`/user/profile/${user.id}`)
   } catch (error) {
     console.error('Error updating user resume:', error.message)
-    res.status(500).render('error/error', err500)
+    res.status(500).send('Internal Server Error')
   }
 }
 
