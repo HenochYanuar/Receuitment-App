@@ -156,10 +156,10 @@ const postUpdateUserResume = async (req, res) => {
       await resumeModel.createResume({
         id,
         user_id: user.id,
-        file_url: `http://localhost:3000/assets/user_resumes/files/${req.file.filename}`
+        file_url: `https://receuitment-app.vercel.app/assets/user_resumes/files/${req.file.filename}`
       })
     } else {
-      const file_url = `http://localhost:3000/assets/user_resumes/files/${req.file.filename}`
+      const file_url = `https://receuitment-app.vercel.app/assets/user_resumes/files/${req.file.filename}`
       await resumeModel.updateResume(
         resume.id, 
         file_url
