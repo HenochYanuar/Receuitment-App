@@ -71,13 +71,13 @@ const registerPost = async (req, res) => {
     const { username, email, password } = req.body
 
     if (!username) {
-      res.status(400).render('login&Register/register', { message: 'Username is required' })
+      res.status(400).render('login&register/register', { message: 'Username is required' })
 
     } else if (!email) {
-      res.status(400).render('login&Register/register', { message: 'Email is required' })
+      res.status(400).render('login&register/register', { message: 'Email is required' })
 
     } else if (!password) {
-      res.status(400).render('login&Register/register', { message: 'Password is required' })
+      res.status(400).render('login&register/register', { message: 'Password is required' })
 
     } else {
 
@@ -102,10 +102,10 @@ const registerPost = async (req, res) => {
         const mailRegisterInstance = new MailRegister(user)
         await mailRegisterInstance.sendMail()
 
-        res.status(201).render('login&Register/login', { message: 'User registered successfully, check your email for activation !' })
+        res.status(201).render('login&register/login', { message: 'User registered successfully, check your email for activation !' })
 
       } else {
-        res.status(400).render('login&Register/register', { message: 'User registration failed, Email already exists' })
+        res.status(400).render('login&register/register', { message: 'User registration failed, Email already exists' })
       }
     }
   } catch (error) {
@@ -121,11 +121,11 @@ const registerVerify = async (req, res) => {
     let user = await userModel.findByEmail(email)
 
     if (!user) {
-      res.status(400).render('login&Register/register', { message: `Users with email ${email} are not registered` })
+      res.status(400).render('login&register/register', { message: `Users with email ${email} are not registered` })
 
     } else {
       await userModel.verify(email, user.isRegister = true)
-      res.status(201).render('login&Register/login', { message: 'Your email has been successfully verified' })
+      res.status(201).render('login&register/login', { message: 'Your email has been successfully verified' })
 
     }
   } catch (error) {
