@@ -1,7 +1,8 @@
 const knex = require('knex')
 const knexConfig = require('../config/knexfile')
 
-const db = knex(knexConfig.development)
+const environment = process.env.NODE_ENV || 'development'
+const db = knex(knexConfig[environment])
 
 const findByEmail = async (email) => {
   try {
