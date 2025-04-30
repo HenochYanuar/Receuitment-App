@@ -14,7 +14,7 @@ class MailRegister {
 
     const renderedTemplate = await ejs.renderFile(templatePath, {
       user: this.user,
-      verificationLink: `http://localhost:3000/user/register/verify?email=${emailParam}`,
+      verificationLink: `https://receuitment-app.vercel.app/user/register/verify?email=${emailParam}`,
     })
 
     mailerVerification(this.user.email, renderedTemplate)
