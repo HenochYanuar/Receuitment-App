@@ -37,4 +37,4 @@ server.use((req, res, next) => {
   res.status(404).render('error/error', err404)
 })
 
-server.listen(port, () => console.log(`Server is running at http://localhost:${port}`))
+module.exports = server
